@@ -18,11 +18,11 @@ module DocumentService
     end
 
     def upload_suppliers
-      upload "SellersImportJob"
+      upload "SellerService::SellersImportJob"
     end
 
     def upload_tenders
-      upload "TendersImportJob"
+      upload "TenderService::TendersImportJob"
     end
   end
 end
