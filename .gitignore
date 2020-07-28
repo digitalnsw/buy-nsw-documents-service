@@ -1,7 +1,8 @@
-.bundle/
 **/*.swp
 **/*.swo
 .idea
+.env.local
+.bundle/
 log/*.log
 pkg/
 test/dummy/db/*.sqlite3
