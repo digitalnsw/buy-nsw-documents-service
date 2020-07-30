@@ -7,11 +7,7 @@ class DocumentService::DocumentScanJob < SharedModules::ApplicationJob
   end
 
   def perform(document)
-    10.times do
-      next if clamby_is_ready?
-      sleep 5
-    end
-    raise "Clamby not ready!" unless clamby_is_ready?
+    raise "Clamby is not ready!" unless clamby_is_ready?
 
     file = download_file(document)
     status = case Clamby.safe?(file)
