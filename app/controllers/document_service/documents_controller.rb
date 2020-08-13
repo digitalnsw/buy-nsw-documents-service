@@ -2,8 +2,7 @@ require_dependency "document_service/application_controller"
 
 module DocumentService
   class DocumentsController < DocumentService::ApplicationController
-    # before_action :authenticate_user, only: [:create]
-    before_action :authenticate_service_or_user, only: [:show, :index, :can_attach]
+    before_action :authenticate_service_or_user, only: [:index, :can_attach]
 
     def can_download_document? document
       session_user && session_user.can_buy?
@@ -25,22 +24,27 @@ module DocumentService
             'uploaded_by_id',
             'seller_id').
             merge(scan_status_text: document.scan_status_text, extension: document.extension, size: document.size)
-        
         result.merge!(url: document.url) if document.clean?
         result
+      elsif document.public
+        document.attributes.slice(
+          'id',
+          'content_type',
+          'original_filename',
+        ).merge(extension: document.extension, size: document.size)
       else
         {}
       end
     end
 
     def create
-      # return unless session_user && session_user&.is_seller? && session_user&.seller_id
       doc = DocumentService::Document.create!({
         seller_id: session_user&.seller_id,
         uploaded_by_id: session_user&.id,
         original_filename: html_escape_once(params["original_filename"]),
         content_type: params["file"].content_type,
-        document: params['file'].tempfile
+        document: params['file'].tempfile,
+        public: session_user.blank?
       })
       render json: {id: doc.id}, status: :created
     end
