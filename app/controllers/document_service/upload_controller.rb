@@ -4,7 +4,18 @@ module DocumentService
   class UploadController < DocumentService::ApplicationController
     include ActionController::HttpAuthentication::Basic::ControllerMethods
     skip_before_action :verify_authenticity_token, raise: false
-    before_action :authenticate_basic
+    before_action :authenticate_basic, except: [:download]
+    before_action :authenticate_service_or_admin, only: [:download]
+
+    def download
+      id = params[:id].to_i
+      document = DocumentService::Document.find id
+      if document.clean?
+        redirect_to document.url
+      else
+        render json: { error: "Document is not clean!" }
+      end
+    end
 
     def upload after_scan
       doc = DocumentService::Document.create!({
