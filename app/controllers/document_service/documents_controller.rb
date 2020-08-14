@@ -42,7 +42,7 @@ module DocumentService
       doc = DocumentService::Document.create!({
         seller_id: session_user&.seller_id,
         uploaded_by_id: session_user&.id,
-        original_filename: html_escape_once(params["original_filename"]),
+        original_filename: params["original_filename"],
         content_type: params["file"].content_type,
         document: params['file'].tempfile,
         public: session_user.blank?

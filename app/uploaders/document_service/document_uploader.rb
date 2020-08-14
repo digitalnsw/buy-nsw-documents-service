@@ -14,7 +14,7 @@ class DocumentService::DocumentUploader < CarrierWave::Uploader::Base
   end
 
   def content_type_whitelist
-    ['image/jpeg', 'image/png', 'application/pdf', 'application/xml', 'application/xls']
+    ['image/jpeg', 'image/png', 'application/pdf', 'application/xml']
   end
 
   def filename

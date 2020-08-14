@@ -9,7 +9,15 @@ class DocumentService::Document < DocumentService::ApplicationRecord
 
   after_commit :scan_file, on: :create
 
+  before_validation :remove_invalid_chars_from_name
+
+  def remove_invalid_chars_from_name
+    original_filename.gsub!(/[^A-Za-z0-9 .,+~\-_|()]/, '_')
+  end
+
   validates :document, :scan_status, presence: true
+  validates :original_filename, format: { with: /\A[A-Za-z0-9 .,+~\-_|()]+\z/ }
+  validates :content_type, inclusion: { in: ['image/jpeg', 'image/png', 'application/pdf', 'application/xml'] }
 
   aasm column: :scan_status do
     state :unscanned, initial: true
