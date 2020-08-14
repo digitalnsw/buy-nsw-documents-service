@@ -2,7 +2,8 @@ require_dependency "document_service/application_controller"
 
 module DocumentService
   class DocumentsController < DocumentService::ApplicationController
-    before_action :authenticate_service_or_user, only: [:index, :can_attach]
+    before_action :authenticate_user, only: [:create]
+    before_action :authenticate_service_or_user, only: [:show, :index, :can_attach]
 
     def can_download_document? document
       session_user && session_user.can_buy?
