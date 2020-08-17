@@ -35,5 +35,9 @@ module DocumentService
     def upload_tenders
       upload "TenderService::TendersImportJob"
     end
+
+    def upload_registered_users
+      upload "SellerService::UsersImportJob"
+    end
   end
 end

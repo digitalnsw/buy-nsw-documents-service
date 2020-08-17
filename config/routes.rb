@@ -8,6 +8,7 @@ DocumentService::Engine.routes.draw do
   resources :upload, only: [] do
     post :upload_suppliers, on: :collection
     post :upload_tenders, on: :collection
+    post :upload_registered_users, on: :collection
   end
 
   get '/download/:id', to: 'upload#download'
