@@ -3,6 +3,8 @@ class DocumentService::Document < DocumentService::ApplicationRecord
   include AASM
   extend Enumerize
 
+  ACCEPTABLE_MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf', 'application/xml', 'text/xml']
+
   enumerize :scan_status, in: [:unscanned, :clean, :infected]
 
   mount_uploader :document, DocumentService::DocumentUploader
@@ -17,7 +19,7 @@ class DocumentService::Document < DocumentService::ApplicationRecord
 
   validates :document, :scan_status, presence: true
   validates :original_filename, format: { with: /\A[A-Za-z0-9 .,+~\-_|()]+\z/ }
-  validates :content_type, inclusion: { in: ['image/jpeg', 'image/png', 'application/pdf', 'application/xml'] }
+  validates :content_type, inclusion: { in: DocumentService::Document::ACCEPTABLE_MIME_TYPES }
 
   aasm column: :scan_status do
     state :unscanned, initial: true

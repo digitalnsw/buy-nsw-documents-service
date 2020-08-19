@@ -10,11 +10,11 @@ class DocumentService::DocumentUploader < CarrierWave::Uploader::Base
   end
 
   def extension_whitelist
-    %w(jpg jpeg pdf png xml xls)
+    %w(jpg jpeg pdf png xml)
   end
 
   def content_type_whitelist
-    ['image/jpeg', 'image/png', 'application/pdf', 'application/xml']
+    DocumentService::Document::ACCEPTABLE_MIME_TYPES
   end
 
   def filename

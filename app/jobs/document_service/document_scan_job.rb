@@ -6,17 +6,27 @@ class DocumentService::DocumentScanJob < SharedModules::ApplicationJob
     @ready ||= Clamby.safe?(Rails.root.join('Gemfile').to_s)
   end
 
+  def file_content_safe?(file)
+    file_type = `file --b --mime-type #{file}`.strip
+    file_type.in? DocumentService::Document::ACCEPTABLE_MIME_TYPES
+  end
+
   def perform(document)
     raise "Clamby is not ready!" unless clamby_is_ready?
 
     file = download_file(document)
-    status = case Clamby.safe?(file)
-             when true then document.mark_as_clean!
-             when false then document.mark_as_infected!
-             else
-               raise ScanFailure
-             end
+
+    unless file_content_safe?(file)
+      document.mark_as_infected?
+    else
+      case Clamby.safe?(file)
+      when true then document.mark_as_clean!
+      when false then document.mark_as_infected!
+      else
+        raise ScanFailure
+      end
+    end
+
     document.after_scan.constantize.perform_later(document) if document.after_scan && document.clean?
-    status
   end
 end
