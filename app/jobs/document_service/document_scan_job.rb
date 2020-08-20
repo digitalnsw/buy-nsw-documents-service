@@ -17,7 +17,7 @@ class DocumentService::DocumentScanJob < SharedModules::ApplicationJob
     file = download_file(document)
 
     unless file_content_safe?(file)
-      document.mark_as_infected?
+      document.mark_as_infected!
     else
       case Clamby.safe?(file)
       when true then document.mark_as_clean!
