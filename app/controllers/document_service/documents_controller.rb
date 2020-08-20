@@ -45,7 +45,6 @@ module DocumentService
         original_filename: params["original_filename"],
         content_type: params["file"].content_type,
         document: params['file'].tempfile,
-        public: session_user.blank?
       })
       render json: {id: doc.id}, status: :created
     end
