@@ -4,7 +4,7 @@ module DocumentService
   class UploadController < DocumentService::ApplicationController
     include ActionController::HttpAuthentication::Basic::ControllerMethods
     skip_before_action :verify_authenticity_token, raise: false
-    before_action :authenticate_basic, except: [:download]
+    before_action :authenticate_basic, except: [:download, :upload]
     before_action :authenticate_service_or_admin, only: [:download]
 
     def download
@@ -17,7 +17,7 @@ module DocumentService
       end
     end
 
-    def upload after_scan
+    def import_later after_scan
       doc = DocumentService::Document.create!({
         original_filename: params['file'].original_filename,
         content_type: params['file'].content_type,
@@ -28,20 +28,31 @@ module DocumentService
       render json: { document: doc.id }, status: :created
     end
 
+    # Public upload endpoint for feedback widget
+    def upload
+      doc = DocumentService::Document.create!({
+        original_filename: params["original_filename"],
+        content_type: params["file"].content_type,
+        document: params['file'].tempfile,
+        public: true
+      })
+      render json: {id: doc.id}, status: :created
+    end
+
     def upload_suppliers
-      upload "SellerService::SellersImportJob"
+      import_later "SellerService::SellersImportJob"
     end
 
     def upload_tenders
-      upload "TenderService::TendersImportJob"
+      import_later "TenderService::TendersImportJob"
     end
 
     def upload_registered_users
-      upload "SellerService::UsersImportJob"
+      import_later "SellerService::UsersImportJob"
     end
 
     def upload_scheme_memberships
-      upload "SellerService::SchemeMembershipsImportJob"
+      import_later "SellerService::SchemeMembershipsImportJob"
     end
   end
 end

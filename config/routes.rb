@@ -6,6 +6,7 @@ DocumentService::Engine.routes.draw do
   resources :avatars, only: [:create, :show]
 
   resources :upload, only: [] do
+    post :upload, on: :collection
     post :upload_suppliers, on: :collection
     post :upload_tenders, on: :collection
     post :upload_registered_users, on: :collection
