@@ -48,7 +48,7 @@ module DocumentService
     end
 
     def upload_registered_users
-      import_later "SellerService::UsersImportJob"
+      import_later "UserService::UsersImportJob"
     end
 
     def upload_scheme_memberships
