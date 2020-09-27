@@ -12,6 +12,10 @@ class DocumentService::DocumentScanJob < SharedModules::ApplicationJob
   end
 
   def perform(document)
+    if Rails.env.development?
+      document.mark_as_clean!
+      return
+    end
     raise "Clamby is not ready!" unless clamby_is_ready?
 
     file = download_file(document)
