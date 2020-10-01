@@ -14,20 +14,20 @@ class DocumentService::DocumentScanJob < SharedModules::ApplicationJob
   def perform(document)
     if Rails.env.development?
       document.mark_as_clean!
-      return
-    end
-    raise "Clamby is not ready!" unless clamby_is_ready?
-
-    file = download_file(document)
-
-    unless file_content_safe?(file)
-      document.mark_as_infected!
     else
-      case Clamby.safe?(file)
-      when true then document.mark_as_clean!
-      when false then document.mark_as_infected!
+      raise "Clamby is not ready!" unless clamby_is_ready?
+
+      file = download_file(document)
+
+      unless file_content_safe?(file)
+        document.mark_as_infected!
       else
-        raise ScanFailure
+        case Clamby.safe?(file)
+        when true then document.mark_as_clean!
+        when false then document.mark_as_infected!
+        else
+          raise ScanFailure
+        end
       end
     end
 
