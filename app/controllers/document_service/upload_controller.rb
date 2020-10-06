@@ -51,6 +51,10 @@ module DocumentService
       import_later "UserService::UsersImportJob"
     end
 
+    def upload_schemes
+      import_later "SellerService::SchemesImportJob"
+    end
+
     def upload_scheme_memberships
       import_later "SellerService::SchemeMembershipsImportJob"
     end
