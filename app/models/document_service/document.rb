@@ -3,7 +3,14 @@ class DocumentService::Document < DocumentService::ApplicationRecord
   include AASM
   extend Enumerize
 
-  ACCEPTABLE_MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf', 'application/xml', 'text/xml']
+  ACCEPTABLE_MIME_TYPES = [ 'image/jpeg',
+                            'image/png',
+                            'application/pdf',
+                            'application/xml',
+                            'text/xml',
+                            'application/csv',
+                            'text/csv',
+                          ]
 
   enumerize :scan_status, in: [:unscanned, :clean, :infected]
 
