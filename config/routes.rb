@@ -12,6 +12,7 @@ DocumentService::Engine.routes.draw do
     post :upload_registered_users, on: :collection
     post :upload_scheme_memberships, on: :collection
     post :upload_schemes, on: :collection
+    post :upload_vendor_capabilities, on: :collection
   end
 
   get '/download/:id', to: 'upload#download'

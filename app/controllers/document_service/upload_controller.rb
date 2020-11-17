@@ -58,5 +58,9 @@ module DocumentService
     def upload_scheme_memberships
       import_later "SellerService::SchemeMembershipsImportJob"
     end
+
+    def upload_vendor_capabilities
+      import_later "SellerService::VendorCapabilitiesImportJob"
+    end
   end
 end
